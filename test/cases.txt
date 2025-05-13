@@ -1,41 +1,84 @@
-# Booleans
+# Lifeline
 
-#t
-#f
-
-==>
-
-Program(Boolean, Boolean)
-
-# Identifiers
-
-one
-Two_Three
+name : Type
 
 ==>
 
-Program(Identifier, Identifier)
+Script(Lifeline(Identifier,":",Identifier))
 
-# Strings
+# Found/Lost
 
-"hello"
-"one\"\\two"
-
-==>
-
-Program(String, String)
-
-# Applications
-
-(begin
-  (when #t
-    (print (concat "hello" " " "world")))
-  (print "DONE"))
++found()
+-lost()
 
 ==>
 
-Program(Application(
-  Identifier,
-  Application(Identifier, Boolean, Application(
-    Identifier, Application(Identifier, String, String, String)))
-  Application(Identifier, String)))
+Script(
+    SelfCall(Identifier, Parameters),
+    SelfCall(Identifier, Parameters))
+
+# Self Calls
+
+call1 ( )
+call2()
+
+==>
+
+Script(
+    SelfCall(Identifier, Parameters),
+    SelfCall(Identifier, Parameters))
+
+# Calls
+
+a.call1()
+b > call2()
+
+==>
+
+Script(
+    Call(Identifier, ".", Identifier, Parameters),
+    Call(Identifier, ">", Identifier, Parameters))
+
+# Call Parameters
+
+a.call1( these are parameters )
+
+==>
+
+Script(Call(Identifier, ".", Identifier, Parameters))
+
+# Call Parameters With Escaped Bracket
+
+a.call1( these are(\) parameters )
+
+==>
+
+Script(Call(Identifier, ".", Identifier, Parameters))
+
+# String Identifiers
+
+"fred was here"."and here"()
+"escaped \" quote" . "named"()
+
+==>
+
+Script(
+    SelfCall(Identifier, Parameters),
+    SelfCall(Identifier, Parameters))
+
+# Call Body
+
+a.call1() {
+    b.call2()
+    c.call3() {}
+}
+
+==>
+
+Script(
+    Call(Identifier, ".", Identifier, Parameters,
+        Callbody("{",
+            Call(Identifier, ".", Identifier, Parameters),
+            Call(Identifier, ".", Identifier, Parameters,
+                Callbody("{","}")),
+        "}")))

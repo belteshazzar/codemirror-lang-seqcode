@@ -1,26 +1,35 @@
-@top Program { expression* }
+@top Script { expression* }
 
 @skip { space | LineComment }
 
-expression {
-  Identifier |
-  String |
-  Boolean |
-  Application { "(" expression* ")" }
-}
+expression { Lifeline | Call | SelfCall }
+
+Lifeline { Identifier ":" Identifier }
+
+Call { Identifier ( "." | ">" ) Identifier Parameters Callbody? }
+
+SelfCall { Identifier Parameters Callbody? }
+
+Callbody { "{" expression* "}" }
+
 
 @tokens {
-  Identifier { $[a-zA-Z_\-0-9]+ }
 
-  String { '"' (!["\\] | "\\" _)* '"' }
+  Identifier { $[a-zA-Z_\-+0-9]+ |  "\"" (![\\\n)] | "\\" _)*  "\"" }
 
-  Boolean { "#t" | "#f" }
+  Parameters { "(" (![\\\n)] | "\\" _)* ")" }
 
-  LineComment { ";" ![\n]* }
+  LineComment { "#" ![\n]* }
 
   space { $[ \t\n\r]+ }
 
   "(" ")"
+
+  "{" "}"
+
+  "." ">"
+
+  ":"
 }
 
 @detectDelim
