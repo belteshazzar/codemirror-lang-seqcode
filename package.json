@@ -23,5 +23,5 @@
     "mocha": "^11.2.2",
     "rollup": "^4.40.2"
   },
-  "license": "MIT"
+  "license": "BSD-2-Clause"
 }
